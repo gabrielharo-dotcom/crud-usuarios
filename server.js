@@ -4,7 +4,6 @@ const { Pool } = require('pg');
 const app = express();
 app.use(express.json());
 
-// Se prioriza la variable de entorno de Render; si no existe, usa la URL interna provista
 const connectionString = process.env.DATABASE_URL || 'postgresql://db_usuarios_9cpt_user:TVjTvbMJoakuP4xwsYH8P7npkjWnK3by@dpg-da7ep91srm7s738af5tg-a/db_usuarios_9cpt';
 
 const pool = new Pool({
@@ -12,7 +11,6 @@ const pool = new Pool({
   ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
 
-// Inicializar la tabla "usuarios" automáticamente si no existe
 const initDb = async () => {
   try {
     await pool.query(`
@@ -29,9 +27,6 @@ const initDb = async () => {
 };
 initDb();
 
-// --- ENDPOINTS CRUD ---
-
-// 1. OBTENER TODOS LOS USUARIOS (READ)
 app.get('/usuarios', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM usuarios ORDER BY id ASC');
@@ -41,7 +36,6 @@ app.get('/usuarios', async (req, res) => {
   }
 });
 
-// 2. CREAR UN USUARIO (CREATE)
 app.post('/usuarios', async (req, res) => {
   const { nombre, email } = req.body;
   try {
@@ -55,7 +49,6 @@ app.post('/usuarios', async (req, res) => {
   }
 });
 
-// 3. ACTUALIZAR UN USUARIO (UPDATE)
 app.put('/usuarios/:id', async (req, res) => {
   const { id } = req.params;
   const { nombre, email } = req.body;
@@ -73,7 +66,6 @@ app.put('/usuarios/:id', async (req, res) => {
   }
 });
 
-// 4. ELIMINAR UN USUARIO (DELETE)
 app.delete('/usuarios/:id', async (req, res) => {
   const { id } = req.params;
   try {
